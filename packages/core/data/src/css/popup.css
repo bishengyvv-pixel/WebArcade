@@ -1,0 +1,378 @@
+/* [css/popup.css] 弹窗与控制界面
+ * 职责：弹窗容器/盒子、控制设置 UI、金手指界面、消息提示
+ */
+
+.ejs-popup_body {
+    height: calc(100% - 130px);
+    overflow: auto;
+}
+
+.ejs-control_body {
+    color: #bcbcbc !important;
+    border: unset;
+}
+
+.ejs-control_body input[type='text'] {
+    background-color: #fff;
+    border: 1px solid #000;
+    font-size: 12px;
+    font-weight: 700;
+    color: #000 !important;
+}
+
+.ejs-control_player_bar {
+    margin: 0;
+    padding: 0;
+}
+
+.ejs-control_player_bar ul {
+    list-style: none;
+}
+
+.ejs-control_player_bar li {
+    color: #bcbcbc !important;
+    display: inline-block;
+}
+
+.ejs-control_player_bar a {
+    padding: 2px 5px;
+    color: #bcbcbc !important;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.ejs-control_player_bar li:hover:not(.ejs-control_selected) {
+    background-color: #333;
+    border-bottom: 1px solid #333;
+}
+
+.ejs-control_selected {
+    border-bottom: 1px solid #fff;
+    background-color: #fff;
+}
+
+.ejs-control_selected a {
+    color: #000 !important;
+}
+
+.ejs-control_bar:hover {
+    background-color: #2d2d2d;
+}
+
+.ejs-control_set_button {
+    float: none;
+    padding: .1rem .5rem;
+    background-color: rgba(var(--ejs-primary-color), 1);
+    color: #fff !important;
+    border-radius: .25rem;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.ejs-control_row label::before {
+    top: -0.15rem !important;
+}
+
+.ejs-control_row label::after {
+    top: calc(-0.15rem + 2px) !important;
+}
+.ejs-popup_box {
+    position: absolute;
+    width: 300px;
+    top: 50%;
+    margin-left: -150px;
+    margin-top: -50px;
+    left: 50%;
+    background: rgba(0, 0, 0, 0.8) !important;
+    padding: 15px 0;
+}
+.ejs-cheat_heading {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    font-weight: 600 !important;
+    font-size: 1.25rem;
+    line-height: 1.25 !important;
+    color: rgba(var(--ejs-primary-color), 1) !important;
+}
+
+.ejs-cheat_close {
+    font: inherit;
+    line-height: inherit;
+    width: auto;
+    background: transparent;
+    border: 0;
+    color: #bcbcbc !important;
+    cursor: pointer;
+}
+
+.ejs-cheat_close::before {
+    content: "\2715";
+    color: #bcbcbc !important;
+    font: inherit;
+    line-height: inherit;
+    width: auto;
+}
+
+.small_popup {
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(238, 238, 238, 0.2);
+    padding: 30px;
+    min-width: 200px;
+    max-width: 350px;
+    max-height: 100vh;
+    border-radius: 4px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    will-change: transform;
+    animation: ejs-cheat_animation .3s cubic-bezier(0, 0, 0.2, 1);
+    font-size: 14px;
+}
+
+.small_popup > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.small_popup h2 {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    font-weight: 600 !important;
+    font-size: 1.25rem;
+    line-height: 1.25 !important;
+    color: rgba(var(--ejs-primary-color), 1) !important;
+}
+
+.small_popup > div > button {
+    font: inherit;
+    line-height: inherit;
+    width: auto;
+    background: transparent;
+    border: 0;
+    color: #bcbcbc !important;
+    cursor: pointer;
+}
+
+.small_popup > div > button::before {
+    content: "\2715";
+    color: #bcbcbc !important;
+    font: inherit;
+    line-height: inherit;
+    width: auto;
+}
+
+.small_popup input {
+    color: #000 !important;
+    font-size: 1rem;
+    padding: .4rem;
+    max-width: 100%;
+    margin-bottom: 15px;
+}
+
+.ejs-cheat_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ejs-cheat_main {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+    color: rgba(0, 0, 0, 0.8);
+    text-align: left;
+    color: #bcbcbc !important;
+    border: unset;
+}
+
+.ejs-cheat_code {
+    color: #000 !important;
+    font-size: 1rem;
+    padding: .4rem;
+    max-width: 100%;
+}
+
+@keyframes ejs-cheat_animation {
+    from {
+        transform: translateY(15%)
+    }
+
+    to {
+        transform: translateY(0)
+    }
+}
+
+.ejs-cheat_parent {
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(238, 238, 238, 0.2);
+    padding: 30px;
+    min-width: 200px;
+    max-width: 500px;
+    max-height: 100vh;
+    border-radius: 4px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    will-change: transform;
+    animation: ejs-cheat_animation .3s cubic-bezier(0, 0, 0.2, 1);
+    font-size: 14px;
+}
+
+.ejs-popup_container_box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ejs-popup_submit {
+    touch-action: manipulation;
+    font: inherit;
+    line-height: inherit;
+    width: auto;
+}
+
+.ejs-button_button {
+    color: #fff !important;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    background-color: #929292;
+    border-radius: .25rem;
+    border-style: none;
+    border-width: 0;
+    cursor: pointer;
+    -webkit-appearance: button;
+    appearance: button;
+    text-transform: none;
+    overflow: visible;
+    margin: 0;
+    will-change: transform;
+    transition: transform .25s ease-out, -webkit-transform .25s ease-out;
+    background-color: rgba(var(--ejs-primary-color),1);
+}
+
+.ejs-button_button:hover {
+    transform: scale(1.05);
+}
+
+.ejs-cheat_rows {
+    max-width: 320px;
+    margin: 0 auto;
+    text-align: left;
+    width: 100%;
+    float: none;
+    user-select: text !important;
+}
+
+.ejs-cheat_row {
+    padding-left: 2.25rem;
+    position: relative;
+    padding: .2em 0;
+    clear: both;
+}
+
+.ejs-cheat_row:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.ejs-cheat_row input[type=checkbox] {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+    box-sizing: border-box;
+    width: auto;
+}
+
+.ejs-cheat_row label {
+    position: relative;
+    margin-bottom: 0;
+    vertical-align: top;
+    word-break: break-word;
+}
+
+.ejs-cheat_row label::before {
+    position: absolute;
+    top: 0rem;
+    display: block;
+    height: 1rem;
+    content: "";
+    background-color: #fff;
+    border: #adb5bd solid 1px;
+    left: -2.25rem;
+    width: 1.75rem;
+    pointer-events: all;
+    border-radius: .5rem;
+}
+
+.ejs-cheat_row input:checked+label::before {
+    color: #fff;
+    border-color: rgba(var(--ejs-primary-color), 1);
+    background-color: rgba(var(--ejs-primary-color), 1);
+}
+
+.ejs-cheat_row label::after {
+    position: absolute;
+    display: block;
+    content: "";
+    background-repeat: no-repeat;
+    background-position: center center;
+    top: calc(0rem + 2px);
+    left: calc(-2.25rem + 2px);
+    width: calc(1rem - 4px);
+    height: calc(1rem - 4px);
+    background-color: #adb5bd;
+    border-radius: .5rem;
+    transition: transform .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out, -webkit-transform .15s ease-in-out;
+}
+
+.ejs-cheat_row input:checked+label::after {
+    background-color: #fff;
+    -webkit-transform: translateX(0.75rem);
+    transform: translateX(0.75rem);
+}
+
+.ejs-cheat_row_button {
+    position: absolute;
+    padding: .1rem .5rem;
+    background-color: rgba(var(--ejs-primary-color), 1);
+    color: #fff !important;
+    border-radius: .25rem;
+    cursor: pointer;
+    right: .025rem;
+    border: 0;
+}
+.ejs-message {
+    float: none;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    color: red;
+    font-size: 17px;
+    padding: 10px;
+    text-align: left;
+    text-shadow: rgb(0, 0, 0) 1px 1px 1px;
+}
+
+.ejs-virtualGamepad_open {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    color: #fff;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    opacity: .5;
+    z-index: 999;
+    cursor: pointer;
+}
+
+.ejs-virtualGamepad_open svg {
+    fill: currentColor;
+}
+

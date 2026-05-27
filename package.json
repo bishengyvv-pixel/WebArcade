@@ -1,0 +1,16 @@
+{
+  "name": "webarcade",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev:server & npm run dev:frontend",
+    "dev:server": "npm run dev -w @webarcade/server",
+    "dev:frontend": "npm run dev -w @webarcade/frontend",
+    "build": "npm run build -w @webarcade/frontend && npm run build -w @webarcade/server",
+    "db:up": "docker compose up -d db",
+    "db:down": "docker compose down"
+  }
+}

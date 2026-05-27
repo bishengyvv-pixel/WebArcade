@@ -1,0 +1,46 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: webarcade
+      POSTGRES_USER: webarcade
+      POSTGRES_PASSWORD: webarcade
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./packages/server/src/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U webarcade']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  server:
+    build:
+      context: .
+      dockerfile: packages/server/Dockerfile
+    ports:
+      - '8084:3001'
+    environment:
+      PORT: '3001'
+      DB_HOST: db
+      DB_PORT: '5432'
+      DB_NAME: webarcade
+      DB_USER: webarcade
+      DB_PASS: webarcade
+      ROMS_DIR: /data/roms
+      UPLOADS_DIR: /data/uploads
+      FRONTEND_DIST: packages/frontend/dist
+      CORE_DATA_DIR: packages/core/data
+    volumes:
+      - roms:/data/roms
+      - uploads:/data/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  roms:
+  uploads:

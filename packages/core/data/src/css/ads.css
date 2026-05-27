@@ -1,0 +1,273 @@
+/* [css/ads.css] 广告与联机
+ * 职责：广告 iframe/关闭按钮、联机聊天/对话框/错误提示/表格
+ */
+
+.ejs-ad_iframe {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    transform: translate(-50%, -50%);
+}
+
+.ejs-ad_close {
+    cursor: pointer;
+}
+
+.ejs-ad_close:after {
+    content: "";
+    position: absolute;
+    border-left: 20px solid transparent;
+    border-right: 20px solid #a7a7a77d;
+    border-top: 20px solid #a7a7a77d;
+    border-bottom: 20px solid transparent;
+    right: 0;
+}
+
+.ejs-ad_close a {
+    right: 4px;
+    top: 4px;
+    position: absolute;
+    border: 0;
+    padding: 0;
+    width: 15px;
+    height: 15px;
+    z-index: 99;
+}
+
+.ejs-ad_close a:before {
+    content: "";
+    border-bottom: 1px solid #fff;
+    transform: rotate(45deg) translateY(-45%);
+    width: 15px;
+    height: 15px;
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.ejs-ad_close a:after {
+    content: "";
+    border-bottom: 1px solid #fff;
+    width: 15px;
+    height: 15px;
+    display: block;
+    position: absolute;
+    right: 0;
+    background: transparent;
+    top: 0;
+    transform: rotate(-45deg) translateY(-50%) translateX(0);
+}
+.ejs-netplay_warning {
+    padding: 10px;
+    margin-bottom: 15px;
+    text-align: center;
+    color: black !important;
+    background-color: rgba(255, 165, 0, 0.8);
+    border: 1px solid orange;
+    border-radius: 5px;
+    font-size: 0.9em;
+}
+
+.ejs-netplay_chat_header_row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.ejs-netplay_chat_hint {
+    font-size: 11px;
+    color: #888;
+}
+
+.ejs-netplay_offscreen {
+    position: fixed;
+    left: -9999px;
+    top: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+.ejs-netplay_offscreen_canvas {
+    position: fixed;
+    left: -9999px;
+    top: -9999px;
+    visibility: hidden;
+}
+
+.ejs-netplay_overlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10001;
+    pointer-events: none;
+    overflow: visible;
+    background: transparent;
+}
+
+.ejs-netplay_canvas {
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: #000;
+    z-index: 10001;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    pointer-events: none;
+}
+
+.ejs-netplay_chat_container {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 8px;
+}
+
+.ejs-netplay_chat_log {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 6px 8px;
+    min-height: 60px;
+    max-height: 120px;
+    overflow-y: auto;
+    font-size: 12px;
+    margin-bottom: 6px;
+    word-break: break-word;
+}
+
+.ejs-netplay_chat_row {
+    display: flex;
+    gap: 4px;
+    align-items: stretch;
+}
+
+.ejs-netplay_chat_to {
+    background-color: #333;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    padding: 4px 6px;
+    font-size: 12px;
+    min-width: 90px;
+    max-width: 120px;
+    cursor: pointer;
+}
+
+.ejs-netplay_chat_input {
+    flex: 1;
+    background-color: #222;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 13px;
+    outline: none;
+}
+
+.ejs-netplay_chat_input:focus {
+    border-color: rgba(var(--ejs-primary-color), 0.6);
+}
+
+.ejs-netplay_dialog_label {
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: #bcbcbc;
+}
+
+.ejs-netplay_dialog_buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.ejs-netplay_error_box {
+    background: rgba(248, 35, 0, 0.15);
+    border: 1px solid rgba(248, 35, 0, 0.4);
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-top: 10px;
+    color: #ff6b6b;
+    font-size: 13px;
+    text-align: center;
+}
+.ejs-netplay_header {
+    margin-top: .5rem;
+    margin-bottom: .5rem;
+    line-height: 1.5;
+    color: rgba(0, 0, 0, .8);
+    text-align: left;
+}
+
+.ejs-netplay_header input,
+.ejs-netplay_header select {
+    font-size: 1rem;
+    padding: .4rem;
+    max-width: 100%;
+    color: #000 !important;
+    background-color: #fff !important;
+    margin: 0;
+    height: 2rem;
+    display: block;
+    font-family: Arial;
+    border: 0px;
+}
+
+.ejs-netplay_name_heading {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    font-weight: 600 !important;
+    font-size: 1.25rem;
+    line-height: 1.25 !important;
+    color: rgba(var(--ejs-primary-color), 1) !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ejs-netplay_table {
+    font-family: Avenir, "Avenir Next", "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 0.8rem;
+    padding: 0 10px;
+}
+
+.ejs-netplay_join_button {
+    float: none;
+    padding: .1rem .5rem;
+    background-color: rgba(var(--ejs-primary-color), 1);
+    color: #fff !important;
+    border-radius: .25rem;
+    cursor: pointer;
+}
+
+.ejs-netplay_table_row:hover {
+    background-color: #2d2d2d;
+}
+
+.ejs-gamepad_dropdown {
+    background-color: var(--ejs-background-color);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: inherit;
+    outline: none;
+    cursor: pointer;
+    font-size: inherit;
+}
+
+.ejs-gamepad_dropdown:focus, .ejs-gamepad_dropdown:active, .ejs-gamepad_dropdown:hover {
+    box-shadow: 0 0 0 2px rgba(51, 153, 255, 0.6);
+    background-color: var(--ejs-background-color);
+}
+
+.ejs-gamepad_section {
+    font-size: 12px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}

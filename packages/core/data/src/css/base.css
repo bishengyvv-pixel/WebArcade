@@ -1,0 +1,353 @@
+/* [css/base.css] 基础样式
+ * 职责：CSS 变量、重置、排版、游戏容器、启动按钮、加载/错误文本、画布、音量滑块、工具类
+ */
+
+.ejs-parent {
+    background: #000;
+    overflow: hidden;
+    position: relative;
+    font-family: Avenir, "Avenir Next", "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    font-weight: 500;
+    line-height: 1.7;
+    width: 100%;
+    height: 100%;
+    color: #bcbcbc;
+    outline-width: 0;
+    outline: none;
+    font-size: 14px;
+}
+
+.ejs-parent *,
+.ejs-parent *::after,
+.ejs-parent *::before {
+    font-family: Avenir, "Avenir Next", "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
+    box-sizing: border-box;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.ejs-parent ::-webkit-scrollbar {
+    width: 8px;
+    height: 16px;
+}
+
+.ejs-parent ::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: rgba(var(--ejs-primary-color));
+}
+
+.ejs-parent ::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: rgba(64, 64, 64, 0.5)
+}
+.ejs-game {
+    width: inherit;
+    height: inherit;
+    background-color: var(--ejs-background-color);
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+}
+
+.ejs-game_background {
+    background-image: var(--ejs-background-image);
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    text-align: -webkit-auto;
+}
+
+.ejs-game_background_blur:before,
+.ejs-game_background_blur:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: var(--ejs-background-image);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.ejs-game_background_blur:before {
+    background-size: cover;
+    filter: blur(10px);
+    transform: scale(1.1);
+}
+.ejs-start_button {
+    position: absolute;
+    bottom: 65px;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+    box-sizing: inherit;
+    display: flex;
+    justify-content: center;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    font-size: 20px;
+    line-height: 45px;
+    text-transform: uppercase;
+    font-weight: bolder;
+    position: relative;
+    text-decoration: none;
+    width: fit-content;
+    padding-left: 40px;
+    padding-right: 40px;
+    white-space: nowrap;
+    height: 45px;
+    border: 0;
+    color: #fff !important;
+    border-radius: 35px;
+    text-align: center;
+    background-color: rgba(var(--ejs-primary-color), 1);
+    box-shadow: 0 0 0 0 #222, 0 0px 0px 0 #111, inset 0 0px 0px 0 rgba(250, 250, 250, 0.2), inset 0 0px 0px 0px rgba(0, 0, 0, 0.5);
+}
+
+.ejs-start_button_border {
+    border: 0.5px solid #333;
+}
+
+.ejs-start_button:active,
+.ejs-start_button:hover {
+    animation: ejs-start_button_pulse 2s infinite;
+}
+
+@keyframes ejs-start_button_pulse {
+    50% {
+        box-shadow: 0 0 0 0 #222, 0 3px 7px 0 #111, inset 0 1px 1px 0 rgba(250, 250, 250, 0.2), inset 0 0px 15px 1px rgba(0, 0, 0, 0.5);
+    }
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 #222, 0 0px 0px 0 #111, inset 0 0px 0px 0 rgba(250, 250, 250, 0.2), inset 0 0px 0px 0px rgba(0, 0, 0, 0.5);
+    }
+}
+.ejs-loading_text {
+    position: absolute;
+    bottom: 20px;
+    font-weight: 500;
+    left: 50%;
+    transform: translateX(-50%);
+    box-sizing: inherit;
+    font-size: 12px;
+    color: #bcbcbc;
+    text-align: center;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.ejs-loading_text_glow {
+    background-color: rgba(0, 0, 0, 0.9);
+    border-radius: 10px;
+    padding: 1px 5px 1px 5px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
+}
+
+.ejs-error_text {
+    bottom: 10%;
+    color: #F82300;
+    border-radius: 15px;
+    padding: 1.5px 8px 1.5px 8px;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.6);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+}
+.ejs-canvas {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: none;
+    object-fit: contain;
+    object-position: top;
+}
+
+.ejs-canvas_parent {
+    width: 100%;
+    height: 100%;
+}
+.ejs-small_screen .ejs-volume_parent input[type='range'] {
+    width: 100%;
+}
+
+.ejs-big_screen .ejs-volume_parent {
+    max-width: 110px;
+}
+
+.ejs-volume_parent {
+    align-items: center;
+    display: flex;
+    flex: 1;
+    position: relative;
+}
+
+.ejs-volume_parent {
+    padding-right: 15px;
+}
+
+.ejs-volume_parent::-webkit-media-controls {
+    display: none;
+}
+
+.ejs-volume_parent input[type='range'] {
+    display: block;
+    -webkit-appearance: none;
+    appearance: none;
+    border: 0;
+    border-radius: 28px;
+    color: rgba(var(--ejs-primary-color), 1);
+    margin: 0;
+    padding: 0;
+    transition: box-shadow 0.3s ease;
+    width: 100%;
+    background: white;
+    height: 6px;
+}
+
+.ejs-volume_parent input[type='range']::-webkit-slider-runnable-track {
+    background-color: rgba(255, 255, 255, 0.25);
+    outline: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 3px;
+    height: 6px;
+    transition: box-shadow 0.3s ease;
+    user-select: none;
+    background-image: linear-gradient(to right, currentColor var(--value, 0%), transparent var(--value, 0%))
+}
+
+.ejs-volume_parent input[type='range']::-webkit-slider-thumb {
+    background: #fff;
+    border: 0;
+    border-radius: 100%;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(47, 52, 61, 0.2);
+    height: 14px;
+    position: relative;
+    transition: all 0.2s ease;
+    width: 14px;
+    -webkit-appearance: none;
+    margin-top: -4px
+}
+
+.ejs-volume_parent input[type='range']::-moz-range-track {
+    background-color: rgba(255, 255, 255, 0.25);
+    outline: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 3px;
+    height: 6px;
+    transition: box-shadow 0.3s ease;
+    user-select: none
+}
+
+.ejs-volume_parent input[type='range']::-moz-range-thumb {
+    background: #fff;
+    border: 0;
+    border-radius: 100%;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(47, 52, 61, 0.2);
+    height: 14px;
+    position: relative;
+    transition: all 0.2s ease;
+    width: 14px
+}
+
+.ejs-volume_parent input[type='range']::-moz-range-progress {
+    background: currentColor;
+    border-radius: 3px;
+    height: 6px
+}
+
+.ejs-volume_parent input[type='range']::-ms-track {
+    background-color: rgba(255, 255, 255, 0.25);
+    outline: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 3px;
+    height: 6px;
+    transition: box-shadow 0.3s ease;
+    user-select: none;
+    color: transparent
+}
+
+.ejs-volume_parent input[type='range']::-ms-fill-upper {
+    background: transparent;
+    border: 0;
+    border-radius: 3px;
+    height: 6px;
+    transition: box-shadow 0.3s ease;
+    user-select: none
+}
+
+.ejs-volume_parent input[type='range']::-ms-fill-lower {
+    background: transparent;
+    border: 0;
+    border-radius: 3px;
+    height: 6px;
+    transition: box-shadow 0.3s ease;
+    user-select: none;
+    background: currentColor
+}
+
+.ejs-volume_parent input[type='range']::-ms-thumb {
+    background: #fff;
+    border: 0;
+    border-radius: 100%;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(47, 52, 61, 0.2);
+    height: 14px;
+    position: relative;
+    transition: all 0.2s ease;
+    width: 14px;
+    margin-top: 0
+}
+
+.ejs-volume_parent input[type='range']::-ms-tooltip {
+    display: none
+}
+
+.ejs-volume_parent input[type='range']:focus {
+    outline: 0
+}
+
+.ejs-volume_parent input[type='range']::-moz-focus-outer {
+    border: 0
+}
+
+.ejs-volume_parent input[type='range']:active::-webkit-slider-thumb {
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(47, 52, 61, 0.2), 0 0 0 3px rgba(255, 255, 255, 0.5)
+}
+
+.ejs-volume_parent input[type='range']:active::-moz-range-thumb {
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(47, 52, 61, 0.2), 0 0 0 3px rgba(255, 255, 255, 0.5)
+}
+
+.ejs-volume_parent input[type='range']:active::-ms-thumb {
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(47, 52, 61, 0.2), 0 0 0 3px rgba(255, 255, 255, 0.5)
+}
+.ejs-vgamepad-active {
+    z-index: 1000;
+    position: absolute;
+    pointer-events: auto;
+    width: 100%;
+}
+
+.ejs-canvas-no-pointer {
+    pointer-events: none;
+}
+
+.netplay-hidden {
+    display: none !important;
+}
+
+.option-enabled {
+    color: inherit;
+    opacity: 1;
+}
+
