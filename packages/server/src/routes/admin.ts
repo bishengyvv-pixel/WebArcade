@@ -43,7 +43,8 @@ router.post('/upload/rom', uploadRom.single('rom'), (req, res) => {
     res.status(400).json({ error: 'No file uploaded' });
     return;
   }
-  res.json({ path: req.file.path, filename: req.file.filename });
+  const platform = (req.query.platform as string) || 'unknown';
+  res.json({ path: `roms/${platform}/${req.file.filename}`, filename: req.file.filename });
 });
 
 router.post('/upload/cover', uploadCover.single('cover'), (req, res) => {
@@ -51,7 +52,7 @@ router.post('/upload/cover', uploadCover.single('cover'), (req, res) => {
     res.status(400).json({ error: 'No file uploaded' });
     return;
   }
-  res.json({ path: req.file.path, filename: req.file.filename });
+  res.json({ path: `uploads/${req.file.filename}`, filename: req.file.filename });
 });
 
 router.delete('/upload/cover/:filename', async (req, res) => {
