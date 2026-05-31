@@ -22,9 +22,12 @@ app.use(cors());
 app.use(express.json());
 
 // 静态资源
-app.use('/roms', express.static(ROMS_DIR));
-app.use('/uploads', express.static(UPLOADS_DIR));
-app.use('/data', express.static(CORE_DATA_DIR));
+app.use('/roms', express.static(ROMS_DIR, { maxAge: '30d', immutable: true }));
+app.use('/roms', (_req, res) => res.status(404).json({ error: 'ROM not found' }));
+app.use('/uploads', express.static(UPLOADS_DIR, { maxAge: '1h' }));
+app.use('/uploads', (_req, res) => res.status(404).json({ error: 'File not found' }));
+app.use('/data', express.static(CORE_DATA_DIR, { maxAge: '7d', immutable: true }));
+app.use('/data', (_req, res) => res.status(404).json({ error: 'Data file not found' }));
 
 // API 路由
 app.use('/api/games', gamesRouter);
@@ -38,9 +41,9 @@ app.get('/api/health', (_req, res) => {
 
 // 生产模式：托管前端构建产物
 if (existsSync(FRONTEND_DIST)) {
-  app.use(express.static(FRONTEND_DIST));
+  app.use(express.static(FRONTEND_DIST, { maxAge: '30d', immutable: true }));
   // SPA fallback
-  app.get('*', (_req, res) => {
+  app.get(/^\/(?!api\/|roms\/|uploads\/|data\/)/, (_req, res) => {
     res.sendFile(resolve(FRONTEND_DIST, 'index.html'));
   });
   console.log(`[prod] Serving frontend from ${FRONTEND_DIST}`);
