@@ -570,7 +570,7 @@ img { display: block; max-width: 100%; }
 }
 
 .game-page__emulator {
-  flex: 1;
+  flex: 70%;
   position: relative;
   background: #000;
   overflow: hidden;
@@ -912,6 +912,22 @@ img { display: block; max-width: 100%; }
   font-size: 13px;
   color: var(--color-primary);
   margin-bottom: 12px;
+}
+
+.admin__upload-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+
+.admin__upload-progress progress {
+  flex: 1;
+  height: 8px;
+  max-width: 200px;
+  accent-color: var(--color-primary);
 }
 
 .admin-form {

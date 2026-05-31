@@ -13,8 +13,9 @@ export interface Game {
 
 export function assetUrl(path: string | null): string | null {
   if (!path) return null;
-  if (path.startsWith('/') || /^https?:\/\//.test(path)) return path;
-  return `/${path}`;
+  if (/^https?:\/\//.test(path)) return path;
+  const encoded = path.split('/').map(encodeURIComponent).join('/');
+  return path.startsWith('/') ? encoded : `/${encoded}`;
 }
 
 export interface GameListParams {
@@ -98,26 +99,53 @@ export async function fetchUpdateGame(id: number, data: Partial<Game>): Promise<
   return res.json();
 }
 
-export async function fetchUploadRom(file: File, platform: string): Promise<{ path: string }> {
-  const form = new FormData();
-  form.append('rom', file);
-  const res = await fetch(`/api/admin/upload/rom?platform=${encodeURIComponent(platform)}`, {
-    method: 'POST',
-    body: form,
+function uploadWithProgress(
+  url: string,
+  fieldName: string,
+  file: File,
+  onProgress?: (pct: number) => void
+): Promise<{ path: string }> {
+  return new Promise((resolve, reject) => {
+    const form = new FormData();
+    form.append(fieldName, file);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', url);
+    xhr.upload.addEventListener('progress', (e) => {
+      if (e.lengthComputable && onProgress) {
+        onProgress(Math.round((e.loaded / e.total) * 100));
+      }
+    });
+    xhr.addEventListener('load', () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(JSON.parse(xhr.responseText));
+      } else {
+        reject(new Error(`Upload failed: ${xhr.status}`));
+      }
+    });
+    xhr.addEventListener('error', () => reject(new Error('Upload failed')));
+    xhr.send(form);
   });
-  if (!res.ok) throw new Error(`Failed to upload ROM: ${res.status}`);
-  return res.json();
 }
 
-export async function fetchUploadCover(file: File): Promise<{ path: string }> {
-  const form = new FormData();
-  form.append('cover', file);
-  const res = await fetch('/api/admin/upload/cover', {
-    method: 'POST',
-    body: form,
-  });
-  if (!res.ok) throw new Error(`Failed to upload cover: ${res.status}`);
-  return res.json();
+export function fetchUploadRom(
+  file: File,
+  platform: string,
+  onProgress?: (pct: number) => void
+): Promise<{ path: string }> {
+  return uploadWithProgress(
+    `/api/admin/upload/rom?platform=${encodeURIComponent(platform)}`,
+    'rom',
+    file,
+    onProgress
+  );
+}
+
+export function fetchUploadCover(
+  file: File,
+  onProgress?: (pct: number) => void
+): Promise<{ path: string }> {
+  return uploadWithProgress('/api/admin/upload/cover', 'cover', file, onProgress);
 }
 
 export async function fetchDeleteCover(filename: string): Promise<void> {

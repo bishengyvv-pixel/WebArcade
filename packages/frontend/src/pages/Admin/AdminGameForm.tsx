@@ -34,6 +34,12 @@ export default function AdminGameForm() {
   const [dragRom, setDragRom] = useState(false);
   const [dragCover, setDragCover] = useState(false);
 
+  const [romFile, setRomFile] = useState<File | null>(null);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
+  const [romProgress, setRomProgress] = useState(-1);
+  const [coverProgress, setCoverProgress] = useState(-1);
+
   useEffect(() => {
     if (!id) return;
     fetchGame(parseInt(id))
@@ -51,50 +57,50 @@ export default function AdminGameForm() {
       .catch((err) => setError('加载游戏失败: ' + String(err)));
   }, [id]);
 
+  useEffect(() => {
+    return () => {
+      if (coverPreview) URL.revokeObjectURL(coverPreview);
+    };
+  }, [coverPreview]);
+
   const set = (key: string) => (e: { target: { value: string } }) => {
     setForm((prev) => ({ ...prev, [key]: e.target.value }));
   };
 
-  const handleRomUpload = async () => {
+  const handleRomFile = () => {
     const file = romInputRef.current?.files?.[0];
     if (!file) return;
-    setUploading('ROM上传中...');
-    try {
-      const result = await fetchUploadRom(file, form.platform);
-      setForm((prev) => ({ ...prev, rom_path: result.path }));
-      setUploading('');
-    } catch (err) {
-      setUploading('ROM上传失败: ' + String(err));
-    }
+    setRomFile(file);
   };
 
-  const handleCoverUpload = async () => {
+  const handleCoverFile = () => {
     const file = coverInputRef.current?.files?.[0];
     if (!file) return;
-    setUploading('封面上传中...');
-    try {
-      const result = await fetchUploadCover(file);
-      setForm((prev) => ({ ...prev, cover_url: result.path }));
-      setUploading('');
-    } catch (err) {
-      setUploading('封面上传失败: ' + String(err));
-    }
+    if (coverPreview) URL.revokeObjectURL(coverPreview);
+    setCoverFile(file);
+    setCoverPreview(URL.createObjectURL(file));
   };
 
   const handleDeleteCover = async () => {
-    if (!form.cover_url) return;
-    const filename = form.cover_url.startsWith('uploads/') ? form.cover_url.slice('uploads/'.length) : form.cover_url;
-    setUploading('封面删除中...');
-    try {
-      await fetchDeleteCover(filename);
-      setForm((prev) => ({ ...prev, cover_url: '' }));
-      setUploading('');
-    } catch (err) {
-      setUploading('封面删除失败: ' + String(err));
+    if (coverPreview) {
+      URL.revokeObjectURL(coverPreview);
+      setCoverPreview(null);
+    }
+    setCoverFile(null);
+    if (form.cover_url) {
+      const filename = form.cover_url.startsWith('uploads/') ? form.cover_url.slice('uploads/'.length) : form.cover_url;
+      setUploading('封面删除中...');
+      try {
+        await fetchDeleteCover(filename);
+        setForm((prev) => ({ ...prev, cover_url: '' }));
+        setUploading('');
+      } catch (err) {
+        setUploading('封面删除失败: ' + String(err));
+      }
     }
   };
 
-  const handleDrop = (ref: React.RefObject<HTMLInputElement | null>, setDrag: (v: boolean) => void, uploadFn: () => void) => (e: DragEvent) => {
+  const handleDrop = (ref: React.RefObject<HTMLInputElement | null>, setDrag: (v: boolean) => void, fileHandler: () => void) => (e: DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setDrag(false);
@@ -103,7 +109,7 @@ export default function AdminGameForm() {
     const dt = new DataTransfer();
     dt.items.add(file);
     ref.current.files = dt.files;
-    uploadFn();
+    fileHandler();
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -115,6 +121,24 @@ export default function AdminGameForm() {
     setSaving(true);
     setError('');
     try {
+      let romPath = form.rom_path;
+      if (romFile) {
+        setRomProgress(0);
+        const result = await fetchUploadRom(romFile, form.platform, setRomProgress);
+        romPath = result.path;
+      }
+
+      let coverUrl = form.cover_url;
+      if (coverFile) {
+        setCoverProgress(0);
+        const result = await fetchUploadCover(coverFile, setCoverProgress);
+        coverUrl = result.path;
+        if (coverPreview) {
+          URL.revokeObjectURL(coverPreview);
+          setCoverPreview(null);
+        }
+      }
+
       const data: Partial<Game> = {
         title_zh: form.title_zh.trim() || null,
         title_en: form.title_en.trim(),
@@ -122,8 +146,8 @@ export default function AdminGameForm() {
         release_year: form.release_year ? parseInt(form.release_year) : null,
         publisher: form.publisher.trim() || null,
         tags: form.tags.split(/[,，]/).map((t) => t.trim()).filter(Boolean),
-        cover_url: form.cover_url.trim() || null,
-        rom_path: form.rom_path.trim(),
+        cover_url: coverUrl.trim() || null,
+        rom_path: romPath.trim(),
         core_type: form.core_type.trim(),
       };
       if (isEdit) {
@@ -136,14 +160,36 @@ export default function AdminGameForm() {
       setError('保存失败: ' + String(err));
     } finally {
       setSaving(false);
+      setUploading('');
+      setRomProgress(-1);
+      setCoverProgress(-1);
     }
   };
+
+  if (id && !form.title_en && !error) {
+    return <p className="admin__loading">Loading...</p>;
+  }
+
+  const displayRomPath = romFile ? romFile.name : form.rom_path;
+  const displayCoverUrl = coverPreview ? coverPreview : assetUrl(form.cover_url);
 
   return (
     <div className="admin-form-wrapper">
       <h3>{isEdit ? '编辑游戏' : '新增游戏'}</h3>
       {error && <p className="admin__error">{error}</p>}
       {uploading && <p className="admin__upload-status">{uploading}</p>}
+      {romProgress >= 0 && (
+        <div className="admin__upload-progress">
+          <span>ROM: {romProgress}%</span>
+          <progress value={romProgress} max={100} />
+        </div>
+      )}
+      {coverProgress >= 0 && (
+        <div className="admin__upload-progress">
+          <span>封面: {coverProgress}%</span>
+          <progress value={coverProgress} max={100} />
+        </div>
+      )}
 
       <form className="admin-form" onSubmit={handleSubmit}>
         <div className="admin-form__body">
@@ -194,16 +240,16 @@ export default function AdminGameForm() {
             <div className="admin-form__field">
               <span className="admin-form__label-text">ROM 文件</span>
               <div
-                className={`admin-form__drop-zone${dragRom ? ' admin-form__drop-zone--drag' : ''}${form.rom_path ? ' admin-form__drop-zone--done' : ''}`}
+                className={`admin-form__drop-zone${dragRom ? ' admin-form__drop-zone--drag' : ''}${displayRomPath ? ' admin-form__drop-zone--done' : ''}`}
                 onDragOver={(e) => { e.preventDefault(); setDragRom(true); }}
                 onDragLeave={() => setDragRom(false)}
-                onDrop={handleDrop(romInputRef, setDragRom, handleRomUpload)}
+                onDrop={handleDrop(romInputRef, setDragRom, handleRomFile)}
                 onClick={(e) => { e.stopPropagation(); romInputRef.current?.click(); }}
               >
-                <input type="file" ref={romInputRef} onChange={handleRomUpload} style={{ display: 'none' }} />
+                <input type="file" ref={romInputRef} onChange={handleRomFile} style={{ display: 'none' }} />
                 <span className="admin-form__drop-icon">📁</span>
                 <span className="admin-form__drop-text">
-                  {form.rom_path ? form.rom_path : '拖拽 ROM 文件到此处'}
+                  {displayRomPath || '拖拽 ROM 文件到此处'}
                 </span>
                 <span className="admin-form__drop-hint">或点击选择文件</span>
                 {dragRom && <div className="admin-form__drop-overlay" />}
@@ -215,15 +261,15 @@ export default function AdminGameForm() {
             <div className="admin-form__field">
               <span className="admin-form__label-text">封面图片</span>
               <div
-                className={`admin-form__drop-zone admin-form__drop-zone--cover${dragCover ? ' admin-form__drop-zone--drag' : ''}${form.cover_url ? ' admin-form__drop-zone--done' : ''}`}
+                className={`admin-form__drop-zone admin-form__drop-zone--cover${dragCover ? ' admin-form__drop-zone--drag' : ''}${displayCoverUrl ? ' admin-form__drop-zone--done' : ''}`}
                 onDragOver={(e) => { e.preventDefault(); setDragCover(true); }}
                 onDragLeave={() => setDragCover(false)}
-                onDrop={handleDrop(coverInputRef, setDragCover, handleCoverUpload)}
+                onDrop={handleDrop(coverInputRef, setDragCover, handleCoverFile)}
                 onClick={(e) => { e.stopPropagation(); coverInputRef.current?.click(); }}
               >
-                <input type="file" ref={coverInputRef} accept="image/*" onChange={handleCoverUpload} style={{ display: 'none' }} />
-                {form.cover_url ? (
-                  <img src={assetUrl(form.cover_url)!} alt="封面预览" className="admin-form__cover-thumb" />
+                <input type="file" ref={coverInputRef} accept="image/*" onChange={handleCoverFile} style={{ display: 'none' }} />
+                {displayCoverUrl ? (
+                  <img src={displayCoverUrl} alt="封面预览" className="admin-form__cover-thumb" />
                 ) : (
                   <>
                     <span className="admin-form__drop-icon">🖼️</span>
@@ -233,7 +279,7 @@ export default function AdminGameForm() {
                 )}
                 {dragCover && <div className="admin-form__drop-overlay" />}
               </div>
-              {form.cover_url && (
+              {(coverFile || form.cover_url) && (
                 <button type="button" className="admin-form__delete-cover" onClick={handleDeleteCover}>
                   删除封面
                 </button>
