@@ -9,6 +9,7 @@ export default function GamePage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
+  const startedRef = useRef(false);
   const [state, setState] = useState<LoadState>('loading');
   const [game, setGame] = useState<Game | null>(null);
   const [error, setError] = useState('');
@@ -30,7 +31,8 @@ export default function GamePage() {
   }, [id]);
 
   const startEmulator = useCallback(() => {
-    if (!game || !containerRef.current) return;
+    if (!game || !containerRef.current || startedRef.current) return;
+    startedRef.current = true;
 
     const container = containerRef.current;
     const gameEl = document.createElement('div');
