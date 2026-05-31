@@ -1,11 +1,14 @@
 -- 平台枚举
-CREATE TYPE platform AS ENUM (
-  'nes', 'snes', 'n64', 'gb', 'gbc', 'gba', 'nds',
-  'md', 'sms', 'gg', 'psx', 'arcade', 'pce', 'ws', 'wsc'
-);
+DO $$ BEGIN
+  CREATE TYPE platform AS ENUM (
+    'nes', 'snes', 'n64', 'gb', 'gbc', 'gba', 'nds',
+    'md', 'sms', 'gg', 'psx', 'arcade', 'pce', 'ws', 'wsc'
+  );
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- 游戏表
-CREATE TABLE games (
+CREATE TABLE IF NOT EXISTS games (
   id           SERIAL PRIMARY KEY,
   title_zh     VARCHAR(200),
   title_en     VARCHAR(200) NOT NULL,
