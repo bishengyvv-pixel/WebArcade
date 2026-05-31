@@ -605,9 +605,9 @@ img { display: block; max-width: 100%; }
   to { transform: rotate(360deg); }
 }
 
-/* ===== Arcade Buttons Overlay ===== */
+/* ===== Gamepad Overlay ===== */
 
-.arcade-buttons {
+.gamepad {
   position: fixed;
   bottom: 0;
   left: 0;
@@ -616,66 +616,197 @@ img { display: block; max-width: 100%; }
   justify-content: space-between;
   align-items: center;
   padding: 16px 24px;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.85) 40%);
+  pointer-events: none;
   z-index: 50;
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
 }
 
-.arcade-buttons__left {
-  display: grid;
-  grid-template-columns: repeat(3, 56px);
-  grid-template-rows: repeat(2, 56px);
-  gap: 4px;
+/* 街机: 居中紧凑 */
+.gamepad--arcade {
+  justify-content: center;
+  gap: 48px;
 }
 
-.arcade-buttons__right {
-  display: grid;
-  grid-template-columns: repeat(2, 56px);
-  grid-template-rows: repeat(2, 56px);
-  gap: 8px;
+/* PS: 纵向排列 */
+.gamepad--psx {
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
 }
 
-.arcade-buttons__center {
+/* 肩键行 */
+.gamepad__shoulders {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+/* 主体: 十字键 + 动作键 左右分布 */
+.gamepad__main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+}
+
+.gamepad__left {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 编辑模式下的方向键网格 */
+.gamepad__left:has(.gamepad-btn) {
+  display: grid;
+  grid-template-columns: repeat(3, 42px);
+  grid-template-rows: repeat(2, 42px);
+  gap: 3px;
+}
+
+.gamepad__right {
+  display: grid;
+  grid-template-columns: repeat(3, 42px);
+  grid-template-rows: repeat(2, 42px);
+  gap: 6px;
+}
+
+/* PS 菱形动作键: 4列×3行 模拟菱形 */
+.gamepad__right--diamond {
+  grid-template-columns: repeat(4, 38px);
+  grid-template-rows: repeat(3, 38px);
+  gap: 2px;
+}
+
+.gamepad__right--diamond .gamepad-btn:nth-child(1) { grid-column: 2; grid-row: 1; }  /* △ */
+.gamepad__right--diamond .gamepad-btn:nth-child(2) { grid-column: 3; grid-row: 2; }  /* ○ */
+.gamepad__right--diamond .gamepad-btn:nth-child(3) { grid-column: 2; grid-row: 3; }  /* × */
+.gamepad__right--diamond .gamepad-btn:nth-child(4) { grid-column: 1; grid-row: 2; }  /* □ */
+
+.gamepad__center {
   display: flex;
   gap: 12px;
 }
 
-.arcade-btn {
-  width: 56px;
-  height: 56px;
+/* 按钮 */
+.gamepad-btn {
+  pointer-events: auto;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.25);
   background: rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.7);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background 0.1s;
+  position: relative;
 }
 
-.arcade-btn:active {
+.gamepad-btn:active,
+.gamepad-btn--pressed {
   background: rgba(255, 255, 255, 0.25);
   border-color: var(--color-primary);
 }
 
-.arcade-btn--action {
-  border-color: rgba(233, 69, 96, 0.4);
-  color: var(--color-primary);
+.gamepad-btn--pressed {
+  box-shadow: 0 0 10px rgba(233, 69, 96, 0.4);
+  transform: scale(1.08);
 }
 
-.arcade-btn--wide {
+.gamepad-btn--action {
+  background: radial-gradient(circle at 40% 35%, #ff6b81, #d63050 70%, #a01a30 100%);
+  border: 2px solid #801a2a;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.gamepad-btn--action:active,
+.gamepad-btn--action.gamepad-btn--pressed {
+  background: radial-gradient(circle at 40% 35%, #c0203a, #901830 70%, #601020 100%);
+  border-color: #e94560;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    inset 0 2px 4px rgba(0, 0, 0, 0.4);
+  transform: scale(0.95);
+}
+
+.gamepad-btn--wide {
   width: auto;
-  min-width: 70px;
-  border-radius: 28px;
+  min-width: 56px;
+  height: 34px;
+  border-radius: 17px;
   padding: 0 16px;
-  font-size: 13px;
+  font-size: 12px;
+  background: radial-gradient(ellipse at 50% 30%, #e0e0e0, #b0b0b0 60%, #707070 100%);
+  border: 2px solid #555;
+  color: #222;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
-.arcade-btn--listening {
+.gamepad-btn--wide:active,
+.gamepad-btn--wide.gamepad-btn--pressed {
+  background: radial-gradient(ellipse at 50% 30%, #a0a0a0, #808080 60%, #505050 100%);
+  border-color: #e94560;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  transform: scale(0.95);
+}
+
+/* PS 按键颜色 */
+.gamepad-btn--ps-× {
+  background: radial-gradient(circle at 40% 35%, #7ab8f5, #3a7bc8 70%, #1a4a80 100%);
+  border-color: #1a4a80;
+  color: #fff;
+}  /* 蓝 */
+.gamepad-btn--ps-○ {
+  background: radial-gradient(circle at 40% 35%, #ff6b81, #d63050 70%, #a01a30 100%);
+  border-color: #801a2a;
+  color: #fff;
+}  /* 红 */
+.gamepad-btn--ps-△ {
+  background: radial-gradient(circle at 40% 35%, #7de08a, #3a9e46 70%, #1a6026 100%);
+  border-color: #1a6026;
+  color: #fff;
+}  /* 绿 */
+.gamepad-btn--ps-□ {
+  background: radial-gradient(circle at 40% 35%, #f8a0c0, #d06088 70%, #903050 100%);
+  border-color: #702040;
+  color: #fff;
+}  /* 粉 */
+
+/* 共用 pressed 状态: PS 按键继承 action 的 pressed 逻辑，但保留各自色调 */
+.gamepad-btn--ps-×:active,
+.gamepad-btn--ps-×.gamepad-btn--pressed { background: radial-gradient(circle at 40% 35%, #5090d0, #2060a0 70%, #103060 100%); border-color: #7ab8f5; }
+.gamepad-btn--ps-○:active,
+.gamepad-btn--ps-○.gamepad-btn--pressed { background: radial-gradient(circle at 40% 35%, #c0203a, #901830 70%, #601020 100%); border-color: #ff6b81; }
+.gamepad-btn--ps-△:active,
+.gamepad-btn--ps-△.gamepad-btn--pressed { background: radial-gradient(circle at 40% 35%, #48b058, #207030 70%, #104020 100%); border-color: #7de08a; }
+.gamepad-btn--ps-□:active,
+.gamepad-btn--ps-□.gamepad-btn--pressed { background: radial-gradient(circle at 40% 35%, #d07090, #a04060 70%, #602040 100%); border-color: #f8a0c0; }
+
+.gamepad-btn--shoulder {
+  width: auto;
+  min-width: 50px;
+  height: 32px;
+  border-radius: 16px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.gamepad-btn--listening {
   border-color: #ff0;
   box-shadow: 0 0 12px rgba(255, 255, 0, 0.5);
   animation: pulse 0.8s ease-in-out infinite alternate;
@@ -686,7 +817,7 @@ img { display: block; max-width: 100%; }
   to { box-shadow: 0 0 18px rgba(255, 255, 0, 0.7); }
 }
 
-.arcade-btn__key {
+.gamepad-btn__key {
   display: block;
   font-size: 9px;
   font-weight: 400;
@@ -698,11 +829,7 @@ img { display: block; max-width: 100%; }
   white-space: nowrap;
 }
 
-.arcade-btn {
-  position: relative;
-}
-
-.arcade-buttons__remap-bar {
+.gamepad__remap-bar {
   position: absolute;
   top: -40px;
   left: 0;
@@ -715,7 +842,7 @@ img { display: block; max-width: 100%; }
   color: rgba(255, 255, 255, 0.7);
 }
 
-.arcade-buttons__remap-btn {
+.gamepad__remap-btn {
   padding: 3px 12px;
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 12px;
@@ -723,7 +850,7 @@ img { display: block; max-width: 100%; }
   color: rgba(255, 255, 255, 0.7);
 }
 
-.arcade-buttons__remap-btn:hover {
+.gamepad__remap-btn:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
 }

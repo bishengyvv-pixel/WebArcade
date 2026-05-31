@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchGame, assetUrl, type Game } from '../../api/games';
-import ArcadeButtons from './ArcadeButtons';
+import GamepadOverlay from './GamepadOverlay';
 
 type LoadState = 'loading' | 'loading-game' | 'starting' | 'ready' | 'error';
 
@@ -13,7 +13,6 @@ export default function GamePage() {
   const [state, setState] = useState<LoadState>('loading');
   const [game, setGame] = useState<Game | null>(null);
   const [error, setError] = useState('');
-  const [showButtons, setShowButtons] = useState(false);
   const [editingKeys, setEditingKeys] = useState(false);
 
   useEffect(() => {
@@ -100,19 +99,11 @@ export default function GamePage() {
         </span>
         <div className="game-page__actions">
           <button
-            className={`game-page__btn ${showButtons ? 'active' : ''}`}
-            onClick={() => { setShowButtons(!showButtons); setEditingKeys(false); }}
+            className={`game-page__btn ${editingKeys ? 'active' : ''}`}
+            onClick={() => setEditingKeys(!editingKeys)}
           >
-            按键
+            键位
           </button>
-          {showButtons && (
-            <button
-              className={`game-page__btn ${editingKeys ? 'active' : ''}`}
-              onClick={() => setEditingKeys(!editingKeys)}
-            >
-              键位
-            </button>
-          )}
           <button className="game-page__btn" onClick={toggleFullscreen}>
             全屏
           </button>
@@ -134,8 +125,12 @@ export default function GamePage() {
         )}
       </div>
 
-      {showButtons && (
-        <ArcadeButtons editing={editingKeys} onEditDone={() => setEditingKeys(false)} />
+      {game && (
+        <GamepadOverlay
+          platform={game.platform}
+          editing={editingKeys}
+          onEditDone={() => setEditingKeys(false)}
+        />
       )}
     </div>
   );
